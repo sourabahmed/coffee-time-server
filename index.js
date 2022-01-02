@@ -20,6 +20,7 @@ async function run() {
     const database = client.db("coffee-time");
     const products = database.collection("products");
     const reviews = database.collection("reviews");
+    const users = database.collection("users");
    
      // get products
      app.get('/products', async (req, res) => {
@@ -33,7 +34,28 @@ async function run() {
         res.send(result);
       })
 
-  
+
+
+    // add user to database
+    app.post('/users', async (req, res) => {
+      const data = req.body;
+      const result = await users.insertOne(data);
+      res.send(result);
+      console.log('insert users');
+    })
+
+    //get user 
+    app.get('/users/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const user = await users.findOne(query);
+      let isAdmin = false;
+      if (user?.role === 'admin') {
+        isAdmin = true;
+      }
+      res.send({ admin: isAdmin });
+    })
+      
   }
   finally {
     //await client.close();
