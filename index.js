@@ -19,10 +19,17 @@ async function run() {
     await client.connect();
     const database = client.db("coffee-time");
     const products = database.collection("products");
+    const reviews = database.collection("reviews");
    
      // get products
      app.get('/products', async (req, res) => {
         const result = await products.find({}).toArray();
+        res.send(result);
+      })
+
+     // get review
+     app.get('/reviews', async (req, res) => {
+        const result = await reviews.find({}).toArray();
         res.send(result);
       })
 
