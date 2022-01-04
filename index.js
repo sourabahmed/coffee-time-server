@@ -36,6 +36,15 @@ async function run() {
             res.json(result)
         })
 
+        // GET Single product API
+        app.get('/products/:productId', async (req, res) => {
+            const id = req.params.productId
+            const query = { _id: ObjectId(id) }
+            const product = await productCollection.findOne(query)
+            res.send(product)
+        })
+
+
         // add user to DB
         app.post('/users', async (req, res) => {
             const user = req.body;
