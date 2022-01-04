@@ -22,6 +22,7 @@ async function run() {
         const orderCollection = database.collection("orders");
         const usersCollection = database.collection("users");
         const reviewCollection = database.collection("review");
+        const photoCollection = database.collection("photo");
 
         // GET API
         app.get('/products', async (req, res) => {
@@ -178,6 +179,20 @@ async function run() {
                 payment_method_types: ['card']
             });
             res.json({ clientSecret: paymentIntent.client_secret })
+        })
+
+        // GET API
+        app.get('/photos', async (req, res) => {
+            const cursor = photoCollection.find({})
+            const products = await cursor.toArray()
+            res.send(products)
+        })
+
+        // POST API
+        app.post('/photos', async (req, res) => {
+            const product = req.body
+            const result = await photoCollection.insertOne(product)
+            res.json(result)
         })
 
     }
