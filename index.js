@@ -44,6 +44,13 @@ async function run() {
             res.send(product)
         })
 
+        // Delete single product
+        app.delete('/products/:productId', async (req, res) => {
+            const id = req.params.productId
+            const query = { _id: ObjectId(id) }
+            const result = await productCollection.deleteOne(query)
+            res.send(result)
+        })
 
         // add user to DB
         app.post('/users', async (req, res) => {
