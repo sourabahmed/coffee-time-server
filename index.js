@@ -22,6 +22,20 @@ async function run() {
         const usersCollection = database.collection("users");
         const reviewCollection = database.collection("review");
 
+        // GET API
+        app.get('/products', async (req, res) => {
+            const cursor = productCollection.find({})
+            const products = await cursor.toArray()
+            res.send(products)
+        })
+
+        // POST API
+        app.post('/addProduct', async (req, res) => {
+            const product = req.body
+            const result = await productCollection.insertOne(product)
+            res.json(result)
+        })
+
         // add user to DB
         app.post('/users', async (req, res) => {
             const user = req.body;
