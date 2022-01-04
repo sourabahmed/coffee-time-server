@@ -52,6 +52,50 @@ async function run() {
             res.send(result)
         })
 
+        // Add Orders API
+        app.post('/order', async (req, res) => {
+            const order = req.body
+            const result = await orderCollection.insertOne(order)
+            res.json(result)
+        })
+
+        // GET all orders of an user API
+        app.get('/myOrders/:email', async (req, res) => {
+            const query = { email: req.params.email }
+            const products = await orderCollection.find(query).toArray()
+            res.send(products)
+        })
+
+        // Delete single order
+        app.delete('/orders/:orderId', async (req, res) => {
+            const id = req.params.orderId
+            const query = { _id: ObjectId(id) }
+            const result = await orderCollection.deleteOne(query)
+            res.send(result)
+        })
+
+        // GET all orders API
+        app.get('/orders', async (req, res) => {
+            const cursor = orderCollection.find({})
+            const products = await cursor.toArray()
+            res.send(products)
+        })
+
+        //update status api
+        app.put('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const data = req.body;
+            const query = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    status: "shipped"
+                }
+            }
+            const result = await orderCollection.updateOne(query, updateDoc, options);
+            res.json(result)
+        })
+
         // add user to DB
         app.post('/users', async (req, res) => {
             const user = req.body;
