@@ -133,6 +133,20 @@ async function run() {
             res.json({ admin: isAdmin });
         })
 
+        // GET API for review
+        app.get('/review', async (req, res) => {
+            const cursor = reviewCollection.find({})
+            const review = await cursor.toArray()
+            res.send(review)
+        })
+
+        // POST API to add review
+        app.post('/addReview', async (req, res) => {
+            const review = req.body
+            const result = await reviewCollection.insertOne(review)
+            res.json(result)
+        })
+
     }
     finally {
         // await client.close();
