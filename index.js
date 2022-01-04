@@ -19,20 +19,36 @@ async function run() {
     await client.connect();
     const database = client.db("coffee-time");
     const products = database.collection("products");
+    const orders = database.collection("orders");
     const reviews = database.collection("reviews");
     const users = database.collection("users");
-   
-     // get products
-     app.get('/products', async (req, res) => {
-        const result = await products.find({}).toArray();
-        res.send(result);
-      })
 
-     // get review
-     app.get('/reviews', async (req, res) => {
-        const result = await reviews.find({}).toArray();
-        res.send(result);
-      })
+    // get products
+    app.get('/products', async (req, res) => {
+      const result = await products.find({}).toArray();
+      res.send(result);
+    })
+
+
+    // get single products using query
+    app.get('/singleproduct/:id', async (req, res) => {
+      const result = await products.findOne({ _id: ObjectId(req.params.id) });
+      res.send(result);
+    })
+
+    // post order data
+    app.post('/orders', async (req, res) => {
+      const data = req.body;
+      const result = await orders.insertOne(data);
+      res.send(result);
+      console.log('posted data');
+    })
+
+    // get review
+    app.get('/reviews', async (req, res) => {
+      const result = await reviews.find({}).toArray();
+      res.send(result);
+    })
 
 
 
@@ -55,7 +71,7 @@ async function run() {
       }
       res.send({ admin: isAdmin });
     })
-      
+
   }
   finally {
     //await client.close();
@@ -65,7 +81,7 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-    res.send('Hello coffe time team work!')
+  res.send('Hello coffe time team work!')
 })
 
 app.listen(port, () => {
