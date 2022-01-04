@@ -44,6 +44,18 @@ async function run() {
       console.log('posted data');
     })
 
+    //get order data
+    app.get('/orders', async (req, res) => {
+      const result = await orders.find({}).toArray();
+      res.send(result);
+    })
+
+    // delete order
+    app.delete('/deleteOrder/:id', async (req, res) => {
+      const result = await orders.deleteOne({ _id: ObjectId(req.params.id) })
+      res.send(result);
+    })
+
     // get review
     app.get('/reviews', async (req, res) => {
       const result = await reviews.find({}).toArray();
@@ -70,6 +82,15 @@ async function run() {
         isAdmin = true;
       }
       res.send({ admin: isAdmin });
+    })
+
+     // make admin
+     app.put('/users/admin', async(req, res) => {
+      const user = req.body;
+      const filter = {email: user.email};
+      const update = {$set: {role: 'admin'}};
+      const result = await users.updateOne(filter, update);
+      res.send(result)
     })
 
   }
